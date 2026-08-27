@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    body {
+        @apply bg-sand-50 text-night-700 font-sans antialiased;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-runway-500 px-6 py-3
+               font-display font-semibold text-white transition-all duration-150 hover:bg-runway-600
+               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-runway-400 focus-visible:ring-offset-2;
+    }
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-full border border-night-500/20 bg-white px-6 py-3
+               font-display font-semibold text-night-500 transition-all duration-150 hover:border-night-500/40
+               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-night-500 focus-visible:ring-offset-2;
+    }
+    .card {
+        @apply rounded-xl2 border border-night-500/10 bg-white shadow-sm transition-shadow duration-200;
+    }
+}

@@ -1,0 +1,16 @@
+<script setup>
+import { Link } from '@inertiajs/vue3';
+</script>
+
+<template>
+    <div class="flex min-h-screen flex-col items-center justify-center bg-sand-50 px-6 py-12">
+        <Link href="/" class="mb-8 flex items-center gap-2 font-display text-xl font-bold text-night-500">
+            <span class="flex h-9 w-9 items-center justify-center rounded-full bg-runway-500 text-white">GC</span>
+            GO'CAR
+        </Link>
+
+        <div class="w-full max-w-md">
+            <slot />
+        </div>
+    </div>
+</template>
