@@ -10,7 +10,7 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     // Vue de pilotage interne : flotte propre + reservations, sans notion
-    // de "partenaire proprietaire" puisque tous les vehicules sont a GO'CAR.
+    // de "partenaire proprietaire" puisque tous les vehicules sont a Andadoo.
     public function index()
     {
         return Inertia::render('Admin/Dashboard', [

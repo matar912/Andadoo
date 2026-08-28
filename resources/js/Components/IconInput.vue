@@ -20,9 +20,9 @@ const paths = {
 
 <template>
     <div>
-        <label v-if="label" class="text-xs font-display font-semibold uppercase tracking-wide text-night-300">{{ label }}</label>
+        <label v-if="label" class="text-xs font-display font-semibold uppercase tracking-wide text-forest-300">{{ label }}</label>
         <div class="relative mt-1">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-night-300">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-forest-300">
                 <path :d="paths[icon]" />
             </svg>
             <input
@@ -31,7 +31,7 @@ const paths = {
                 :type="type"
                 :autofocus="autofocus"
                 :placeholder="placeholder"
-                class="w-full rounded-lg border-night-500/15 pl-10 text-night-700 placeholder-night-300/60 focus:border-runway-500 focus:ring-runway-500"
+                class="w-full rounded-lg border-forest-500/15 pl-10 text-forest-700 placeholder-forest-300/60 focus:border-gold-500 focus:ring-gold-500"
             />
         </div>
         <p v-if="error" class="mt-1 text-xs text-red-600">{{ error }}</p>

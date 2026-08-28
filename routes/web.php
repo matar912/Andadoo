@@ -65,12 +65,12 @@ require __DIR__.'/auth.php'; // Breeze : /login /register /forgot-password /rese
 |--------------------------------------------------------------------------
 | Portail administrateur (lien non reference + authentification dediee)
 |--------------------------------------------------------------------------
-| L'URL vient de config('gocar.admin_path') (voir .env: ADMIN_PANEL_PATH),
+| L'URL vient de config('andadoo.admin_path') (voir .env: ADMIN_PANEL_PATH),
 | jamais liee depuis le site public. Une fois sur le formulaire, l'admin
 | passe par SA PROPRE authentification (AdminAuthenticatedSessionController),
 | distincte du login client, qui refuse toute session pour role != 'admin'.
 */
-Route::prefix(config('gocar.admin_path'))->name('admin.')->group(function () {
+Route::prefix(config('andadoo.admin_path'))->name('admin.')->group(function () {
     Route::middleware('guest')->group(function () {
         Route::get('/login', [AdminAuthenticatedSessionController::class, 'create'])->name('login');
         Route::post('/login', [AdminAuthenticatedSessionController::class, 'store']);

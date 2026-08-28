@@ -31,20 +31,20 @@ const steps = [
         <template #aside>
             <ol class="space-y-4">
                 <li v-for="(s, i) in steps" :key="s[0]" class="flex gap-3">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-runway-400/60 font-display text-xs font-semibold text-runway-400">
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-gold-400/60 font-display text-xs font-semibold text-gold-400">
                         {{ i + 1 }}
                     </span>
                     <div>
                         <p class="font-display text-sm font-semibold text-white">{{ s[0] }}</p>
-                        <p class="text-xs text-sand-100/60">{{ s[1] }}</p>
+                        <p class="text-xs text-paper-100/60">{{ s[1] }}</p>
                     </div>
                 </li>
             </ol>
         </template>
 
-        <p class="font-display text-xs font-semibold uppercase tracking-widest text-runway-600 lg:hidden">GO'CAR</p>
-        <h2 class="mt-2 font-display text-2xl font-bold text-night-500">Créer un compte</h2>
-        <p class="mt-1 text-sm text-night-500/60">Diaspora, touriste ou résident : un seul compte suffit.</p>
+        <p class="font-display text-xs font-semibold uppercase tracking-widest text-gold-600 lg:hidden">Andadoo</p>
+        <h2 class="mt-2 font-display text-2xl font-bold text-forest-500">Créer un compte</h2>
+        <p class="mt-1 text-sm text-forest-500/60">Diaspora, touriste ou résident : un seul compte suffit.</p>
 
         <form @submit.prevent="submit" class="mt-7 space-y-5">
             <IconInput v-model="form.name" icon="user" label="Nom complet" placeholder="Aïssatou Diop" autofocus :error="form.errors.name" />
@@ -61,15 +61,15 @@ const steps = [
                 </span>
             </button>
 
-            <p class="text-center text-xs text-night-500/50">
+            <p class="text-center text-xs text-forest-500/50">
                 En créant un compte, vous acceptez que vos informations soient utilisées uniquement
-                pour votre accueil et vos réservations GO'CAR.
+                pour votre accueil et vos réservations Andadoo.
             </p>
         </form>
 
-        <p class="mt-6 text-center text-sm text-night-500/70">
+        <p class="mt-6 text-center text-sm text-forest-500/70">
             Déjà un compte ?
-            <Link href="/login" class="font-display font-semibold text-runway-600 hover:text-runway-700">Se connecter</Link>
+            <Link href="/login" class="font-display font-semibold text-gold-600 hover:text-gold-700">Se connecter</Link>
         </p>
     </AuthSplitLayout>
 </template>

@@ -26,19 +26,19 @@ defineExpose({ open });
 <template>
     <Teleport to="body">
         <Transition name="fade">
-            <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-night-900/50 px-4" @click.self="cancel">
+            <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-forest-900/50 px-4" @click.self="cancel">
                 <Transition name="pop" appear>
                     <div v-if="visible" class="w-full max-w-sm rounded-xl2 bg-white p-6 shadow-xl">
-                        <h3 class="font-display text-lg font-semibold text-night-700">{{ options.title }}</h3>
-                        <p class="mt-2 text-sm text-night-500/70">{{ options.message }}</p>
+                        <h3 class="font-display text-lg font-semibold text-forest-700">{{ options.title }}</h3>
+                        <p class="mt-2 text-sm text-forest-500/70">{{ options.message }}</p>
                         <div class="mt-6 flex justify-end gap-3">
-                            <button @click="cancel" class="rounded-full px-4 py-2 text-sm font-display font-medium text-night-500 hover:bg-night-500/5">
+                            <button @click="cancel" class="rounded-full px-4 py-2 text-sm font-display font-medium text-forest-500 hover:bg-forest-500/5">
                                 Annuler
                             </button>
                             <button
                                 @click="confirm"
                                 class="rounded-full px-4 py-2 text-sm font-display font-semibold text-white"
-                                :class="options.danger ? 'bg-red-600 hover:bg-red-700' : 'bg-runway-500 hover:bg-runway-600'"
+                                :class="options.danger ? 'bg-red-600 hover:bg-red-700' : 'bg-gold-500 hover:bg-gold-600'"
                             >
                                 {{ options.confirmLabel }}
                             </button>

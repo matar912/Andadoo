@@ -1,6 +1,6 @@
-# GO'CAR — Guide d'installation (à suivre dans l'ordre)
+# Andadoo — Guide d'installation (à suivre dans l'ordre)
 
-Ce dossier contient uniquement les fichiers **métier** du projet GO'CAR (migrations, modèles,
+Ce dossier contient uniquement les fichiers **métier** du projet Andadoo (migrations, modèles,
 contrôleurs, pages Vue). Il vient se greffer sur une installation Laravel + Breeze standard.
 Suivez les étapes **dans l'ordre**, sans en sauter — la plupart des erreurs rencontrées viennent
 d'une étape oubliée.
@@ -8,8 +8,8 @@ d'une étape oubliée.
 ## Étape 1 — Créer le projet Laravel de base
 
 ```bash
-composer create-project laravel/laravel gocar
-cd gocar
+composer create-project laravel/laravel andadoo
+cd andadoo
 composer require laravel/breeze --dev
 php artisan breeze:install vue
 npm install
@@ -28,7 +28,7 @@ Copiez ces fichiers **en écrasant** ceux du projet fraîchement créé quand il
 | `app/Http/Controllers/Auth/*.php` | `app/Http/Controllers/Auth/` **(écrase les fichiers Breeze — copiez le fichier ENTIER, ne cherchez pas la ligne à changer)** |
 | `app/Http/Middleware/EnsureUserHasRole.php` | `app/Http/Middleware/` |
 | `app/Console/Commands/MakeAdminCommand.php` | `app/Console/Commands/` |
-| `config/gocar.php` | `config/` |
+| `config/andadoo.php` | `config/` |
 | `routes/web.php` | `routes/` **(écrase celui de Breeze)** |
 | `resources/js/Pages/*` | `resources/js/Pages/` |
 | `resources/js/Layouts/*` | `resources/js/Layouts/` |
@@ -57,7 +57,7 @@ public function share(Request $request): array
     return [
         ...parent::share($request),
         'auth' => ['user' => $request->user()?->only('id', 'name', 'email', 'role')],
-        'adminPath' => config('gocar.admin_path'),
+        'adminPath' => config('andadoo.admin_path'),
         'flash' => ['success' => fn () => $request->session()->get('success')],
     ];
 }
@@ -86,7 +86,7 @@ problème sous Windows sans droits administrateur. Rien à configurer, ça fonct
 publique**, contrairement aux clients qui s'inscrivent librement sur `/register`.
 
 ```bash
-php artisan gocar:make-admin
+php artisan andadoo:make-admin
 ```
 La commande vous demande nom / e-mail / mot de passe en interactif et crée le compte
 (`role = admin`). Si l'e-mail existe déjà comme compte client, elle propose de le promouvoir.
@@ -97,7 +97,7 @@ Dans `.env` :
 ```
 ADMIN_PANEL_PATH=un-segment-non-devinable
 ```
-Sans cette ligne, un chemin par défaut (`gocar-portail-9f3k`) est utilisé — changez-le avant la
+Sans cette ligne, un chemin par défaut (`andadoo-portail-9f3k`) est utilisé — changez-le avant la
 mise en production. Ce chemin n'est **jamais affiché** nulle part sur le site public : c'est ce
 qui le rend structurellement différent de l'accès visiteur, en plus d'avoir son propre écran de
 connexion et son propre contrôle de rôle.
@@ -120,7 +120,7 @@ php artisan serve
 | | **Client** | **Administrateur** |
 |---|---|---|
 | Entrée | `/register`, `/login` — liés dans le menu du site | `/{ADMIN_PANEL_PATH}/login` — **jamais lié nulle part** dans l'interface |
-| Création de compte | Auto-inscription publique | Uniquement via `php artisan gocar:make-admin` |
+| Création de compte | Auto-inscription publique | Uniquement via `php artisan andadoo:make-admin` |
 | Ce qu'il peut faire | Parcourir les véhicules **disponibles**, réserver, suivre ses réservations, éditer son profil | Ajouter/modifier/retirer des véhicules, valider ou refuser chaque réservation |
 | Garde-fou technique | Route protégée par `auth` + `verified` | Route protégée par `auth` + `role:admin` ; le login public refuse toute session pour un compte admin, et réciproquement le login admin refuse un compte client |
 
@@ -145,7 +145,7 @@ réservations confirmées — aucune migration à refaire.
 ## Modèle de données
 
 Voir le diagramme ERD fourni dans la conversation. Points clés :
-- Aucune table ne lie un véhicule à un propriétaire tiers : la flotte est 100% GO'CAR.
+- Aucune table ne lie un véhicule à un propriétaire tiers : la flotte est 100% Andadoo.
 - `drivers` référence `users` (role = `driver`) : ce sont des employés, pas des comptes externes.
 - `partners` sert uniquement à la distribution commerciale (agences, hôtels), jamais à l'apport de véhicules.
 
@@ -184,6 +184,16 @@ Voir le diagramme ERD fourni dans la conversation. Points clés :
 3. Tableaux admin : recherche, tri, pagination visible (actuellement pagination silencieuse côté backend).
 4. Activation du paiement (voir ci-dessus) quand le besoin sera confirmé.
 5. 2FA sur le compte admin (Laravel Fortify) avant mise en production.
+
+## Identité visuelle
+
+- **Logo** : `public/images/logo-icon.png` (le mark seul, utilisé dans les en-têtes et le rail
+  admin) et `public/images/logo-full.png` (mark + nom, disponible pour d'autres usages : documents,
+  e-mails). Une fois le scaffold copié dans votre projet Laravel, ces deux fichiers doivent être
+  copiés dans `public/images/` pour que les balises `<img src="/images/...">` les trouvent.
+- **Palette** (`tailwind.config.js`) : `forest` (vert profond, texte et fonds sombres), `paper`
+  (fond clair chaud), `gold` (accent). Extraite directement des couleurs du logo fourni.
+- **Typographie** : Space Grotesk (titres) + Inter (texte courant), inchangée.
 
 ## Prochaines étapes suggérées
 

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    // Chauffeur = employe GO'CAR (lie a un users.role = 'driver'),
+    // Chauffeur = employe Andadoo (lie a un users.role = 'driver'),
     // jamais un partenaire externe.
     public function up(): void
     {

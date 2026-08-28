@@ -11,10 +11,10 @@ const confirmDialog = ref(null);
 const pending = ref(null);
 
 const statusStyle = {
-    en_attente: 'bg-runway-500/15 text-runway-300',
+    en_attente: 'bg-gold-500/15 text-gold-300',
     confirmee: 'bg-emerald-500/15 text-emerald-300',
     en_cours: 'bg-sky-500/15 text-sky-300',
-    terminee: 'bg-white/10 text-sand-100/60',
+    terminee: 'bg-white/10 text-paper-100/60',
     annulee: 'bg-red-500/15 text-red-300',
 };
 const statusLabels = {
@@ -57,13 +57,13 @@ async function refuse(r) {
         <ConfirmDialog ref="confirmDialog" />
 
         <h1 class="font-display text-2xl font-bold text-white">Réservations</h1>
-        <p class="mt-1 text-sm text-sand-100/60">
+        <p class="mt-1 text-sm text-paper-100/60">
             Chaque demande client reste "en attente" tant qu'elle n'a pas été validée ici.
         </p>
 
         <div v-if="reservations.data.length" class="mt-8 overflow-x-auto rounded-xl2 border border-white/10">
             <table class="w-full min-w-[640px] text-left text-sm">
-                <thead class="bg-night-700 text-sand-100/60">
+                <thead class="bg-forest-700 text-paper-100/60">
                     <tr>
                         <th class="px-4 py-3">Client</th>
                         <th class="px-4 py-3">Véhicule</th>
@@ -72,20 +72,20 @@ async function refuse(r) {
                         <th class="px-4 py-3"></th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5 bg-night-700/40">
+                <tbody class="divide-y divide-white/5 bg-forest-700/40">
                     <tr v-for="r in reservations.data" :key="r.id" class="transition-colors duration-150 hover:bg-white/[0.03]">
                         <td class="px-4 py-3 text-white">{{ r.client?.name }}</td>
-                        <td class="px-4 py-3 text-sand-100/80">{{ r.vehicle?.brand }} {{ r.vehicle?.model }}</td>
-                        <td class="px-4 py-3 text-sand-100/60">{{ r.start_at?.slice(0, 10) }} → {{ r.end_at?.slice(0, 10) }}</td>
+                        <td class="px-4 py-3 text-paper-100/80">{{ r.vehicle?.brand }} {{ r.vehicle?.model }}</td>
+                        <td class="px-4 py-3 text-paper-100/60">{{ r.start_at?.slice(0, 10) }} → {{ r.end_at?.slice(0, 10) }}</td>
                         <td class="px-4 py-3">
                             <span class="rounded-full px-2 py-1 text-xs" :class="statusStyle[r.status]">{{ statusLabels[r.status] }}</span>
                         </td>
                         <td class="px-4 py-3 text-right">
                             <template v-if="r.status === 'en_attente'">
-                                <span v-if="pending === r.id" class="text-xs text-sand-100/40">Traitement...</span>
+                                <span v-if="pending === r.id" class="text-xs text-paper-100/40">Traitement...</span>
                                 <template v-else>
                                     <button @click="approve(r)" class="mr-3 font-display text-emerald-400 transition-colors hover:text-emerald-300">Valider</button>
-                                    <button @click="refuse(r)" class="font-display text-runway-400 transition-colors hover:text-runway-300">Refuser</button>
+                                    <button @click="refuse(r)" class="font-display text-gold-400 transition-colors hover:text-gold-300">Refuser</button>
                                 </template>
                             </template>
                         </td>
@@ -96,7 +96,7 @@ async function refuse(r) {
 
         <div v-else class="mt-16 flex flex-col items-center rounded-xl2 border border-dashed border-white/10 py-16 text-center">
             <p class="font-display font-semibold text-white">Aucune réservation pour le moment</p>
-            <p class="mt-1 max-w-sm text-sm text-sand-100/50">Les demandes des clients apparaîtront ici dès qu'ils réserveront un véhicule disponible.</p>
+            <p class="mt-1 max-w-sm text-sm text-paper-100/50">Les demandes des clients apparaîtront ici dès qu'ils réserveront un véhicule disponible.</p>
         </div>
     </AdminLayout>
 </template>

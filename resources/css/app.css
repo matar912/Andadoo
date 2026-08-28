@@ -6,22 +6,27 @@
 
 @layer base {
     body {
-        @apply bg-sand-50 text-night-700 font-sans antialiased;
+        @apply bg-paper-50 text-forest-700 font-sans antialiased;
     }
 }
 
 @layer components {
     .btn-primary {
-        @apply inline-flex items-center justify-center gap-2 rounded-full bg-runway-500 px-6 py-3
-               font-display font-semibold text-white transition-all duration-150 hover:bg-runway-600
-               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-runway-400 focus-visible:ring-offset-2;
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-forest-500 px-6 py-3
+               font-display font-semibold text-white transition-all duration-150 hover:bg-forest-700
+               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-300 focus-visible:ring-offset-2;
     }
     .btn-secondary {
-        @apply inline-flex items-center justify-center gap-2 rounded-full border border-night-500/20 bg-white px-6 py-3
-               font-display font-semibold text-night-500 transition-all duration-150 hover:border-night-500/40
-               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-night-500 focus-visible:ring-offset-2;
+        @apply inline-flex items-center justify-center gap-2 rounded-full border border-forest-500/20 bg-white px-6 py-3
+               font-display font-semibold text-forest-500 transition-all duration-150 hover:border-forest-500/40
+               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 focus-visible:ring-offset-2;
+    }
+    .btn-accent {
+        @apply inline-flex items-center justify-center gap-2 rounded-full bg-gold-500 px-6 py-3
+               font-display font-semibold text-white transition-all duration-150 hover:bg-gold-600
+               active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2;
     }
     .card {
-        @apply rounded-xl2 border border-night-500/10 bg-white shadow-sm transition-shadow duration-200;
+        @apply rounded-xl2 border border-forest-500/[0.06] bg-white shadow-card transition-shadow duration-200 hover:shadow-[0_2px_4px_rgba(14,18,22,0.06),0_16px_32px_-12px_rgba(14,18,22,0.16)];
     }
 }

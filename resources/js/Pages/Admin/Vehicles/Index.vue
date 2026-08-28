@@ -12,9 +12,9 @@ const removingId = ref(null);
 
 const statusStyle = {
     disponible: 'bg-emerald-500/15 text-emerald-300',
-    en_location: 'bg-runway-500/15 text-runway-300',
+    en_location: 'bg-gold-500/15 text-gold-300',
     maintenance: 'bg-amber-500/15 text-amber-300',
-    hors_service: 'bg-white/10 text-sand-100/50',
+    hors_service: 'bg-white/10 text-paper-100/50',
 };
 
 async function remove(vehicle) {
@@ -44,8 +44,8 @@ async function remove(vehicle) {
 
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="font-display text-2xl font-bold text-white">Flotte GO'CAR</h1>
-                <p class="mt-1 text-sm text-sand-100/60">
+                <h1 class="font-display text-2xl font-bold text-white">Flotte Andadoo</h1>
+                <p class="mt-1 text-sm text-paper-100/60">
                     C'est le statut ici qui décide si un client peut réserver ce véhicule.
                 </p>
             </div>
@@ -54,7 +54,7 @@ async function remove(vehicle) {
 
         <div v-if="vehicles.data.length" class="mt-8 overflow-x-auto rounded-xl2 border border-white/10">
             <table class="w-full min-w-[640px] text-left text-sm">
-                <thead class="bg-night-700 text-sand-100/60">
+                <thead class="bg-forest-700 text-paper-100/60">
                     <tr>
                         <th class="px-4 py-3"></th>
                         <th class="px-4 py-3">Véhicule</th>
@@ -64,7 +64,7 @@ async function remove(vehicle) {
                         <th class="px-4 py-3"></th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-white/5 bg-night-700/40">
+                <tbody class="divide-y divide-white/5 bg-forest-700/40">
                     <tr
                         v-for="v in vehicles.data"
                         :key="v.id"
@@ -72,21 +72,21 @@ async function remove(vehicle) {
                         :class="{ 'opacity-40': v.status === 'hors_service' || removingId === v.id }"
                     >
                         <td class="px-4 py-3">
-                            <div class="h-12 w-16 overflow-hidden rounded bg-night-900">
+                            <div class="h-12 w-16 overflow-hidden rounded bg-forest-900">
                                 <img v-if="v.photo_path" :src="`/vehicule-photo/${v.photo_path}`" class="h-full w-full object-cover" />
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-white">{{ v.brand }} {{ v.model }} <span class="text-sand-100/40">({{ v.year }})</span></td>
-                        <td class="px-4 py-3 capitalize text-sand-100/80">{{ v.category }}</td>
-                        <td class="px-4 py-3 text-sand-100/80">{{ v.daily_price }} FCFA</td>
+                        <td class="px-4 py-3 text-white">{{ v.brand }} {{ v.model }} <span class="text-paper-100/40">({{ v.year }})</span></td>
+                        <td class="px-4 py-3 capitalize text-paper-100/80">{{ v.category }}</td>
+                        <td class="px-4 py-3 text-paper-100/80">{{ v.daily_price }} FCFA</td>
                         <td class="px-4 py-3">
                             <span class="rounded-full px-2 py-1 text-xs capitalize" :class="statusStyle[v.status]">{{ v.status.replace('_', ' ') }}</span>
                         </td>
                         <td class="px-4 py-3 text-right">
-                            <span v-if="removingId === v.id" class="text-xs text-sand-100/40">Traitement...</span>
+                            <span v-if="removingId === v.id" class="text-xs text-paper-100/40">Traitement...</span>
                             <template v-else>
-                                <Link :href="`${adminBase()}/vehicules/${v.id}/modifier`" class="mr-3 text-sand-100/70 transition-colors hover:text-white">Modifier</Link>
-                                <button v-if="v.status !== 'hors_service'" @click="remove(v)" class="text-runway-400 transition-colors hover:text-runway-300">Retirer</button>
+                                <Link :href="`${adminBase()}/vehicules/${v.id}/modifier`" class="mr-3 text-paper-100/70 transition-colors hover:text-white">Modifier</Link>
+                                <button v-if="v.status !== 'hors_service'" @click="remove(v)" class="text-gold-400 transition-colors hover:text-gold-300">Retirer</button>
                             </template>
                         </td>
                     </tr>
@@ -96,7 +96,7 @@ async function remove(vehicle) {
 
         <div v-else class="mt-16 flex flex-col items-center rounded-xl2 border border-dashed border-white/10 py-16 text-center">
             <p class="font-display font-semibold text-white">Aucun véhicule dans la flotte</p>
-            <p class="mt-1 max-w-sm text-sm text-sand-100/50">Ajoutez votre premier véhicule pour qu'il apparaisse dans le catalogue client.</p>
+            <p class="mt-1 max-w-sm text-sm text-paper-100/50">Ajoutez votre premier véhicule pour qu'il apparaisse dans le catalogue client.</p>
             <Link :href="`${adminBase()}/vehicules/nouveau`" class="btn-primary mt-5">+ Ajouter un véhicule</Link>
         </div>
     </AdminLayout>

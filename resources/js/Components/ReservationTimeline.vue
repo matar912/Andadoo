@@ -34,9 +34,9 @@ function stepState(key) {
                 <div
                     class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 font-display text-xs font-semibold transition-colors"
                     :class="{
-                        'border-runway-500 bg-runway-500 text-white': stepState(s.key) === 'done',
-                        'border-runway-500 bg-white text-runway-600 ring-4 ring-runway-500/15': stepState(s.key) === 'current',
-                        'border-night-500/15 bg-white text-night-500/30': stepState(s.key) === 'upcoming',
+                        'border-gold-500 bg-gold-500 text-white': stepState(s.key) === 'done',
+                        'border-gold-500 bg-white text-gold-600 ring-4 ring-gold-500/15': stepState(s.key) === 'current',
+                        'border-forest-500/15 bg-white text-forest-500/30': stepState(s.key) === 'upcoming',
                     }"
                 >
                     <svg v-if="stepState(s.key) === 'done'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
@@ -47,12 +47,12 @@ function stepState(key) {
                 <div
                     v-if="i < steps.length - 1"
                     class="h-0.5 flex-1 transition-colors"
-                    :class="stepState(s.key) === 'done' ? 'bg-runway-500' : 'bg-night-500/10'"
+                    :class="stepState(s.key) === 'done' ? 'bg-gold-500' : 'bg-forest-500/10'"
                 />
             </div>
             <p
                 class="mt-2 max-w-[6.5rem] text-xs font-display font-medium"
-                :class="stepState(s.key) === 'upcoming' ? 'text-night-500/40' : 'text-night-500'"
+                :class="stepState(s.key) === 'upcoming' ? 'text-forest-500/40' : 'text-forest-500'"
             >
                 {{ s.label }}
             </p>

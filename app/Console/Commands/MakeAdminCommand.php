@@ -11,14 +11,14 @@ use Illuminate\Support\Str;
 class MakeAdminCommand extends Command
 {
     // Seul moyen de creer un compte admin : jamais via une page publique.
-    // Usage : php artisan gocar:make-admin
-    protected $signature = 'gocar:make-admin';
+    // Usage : php artisan andadoo:make-admin
+    protected $signature = 'andadoo:make-admin';
 
-    protected $description = "Cree (ou promeut) un compte administrateur GO'CAR";
+    protected $description = "Cree (ou promeut) un compte administrateur Andadoo";
 
     public function handle(): int
     {
-        $this->info("Creation d'un compte administrateur GO'CAR");
+        $this->info("Creation d'un compte administrateur Andadoo");
         $this->line('---------------------------------------------');
 
         $name = $this->ask('Nom complet');
@@ -68,7 +68,7 @@ class MakeAdminCommand extends Command
         ]);
 
         $this->info("✔ Compte administrateur cree pour {$email}.");
-        $this->line('Connectez-vous via : /'.config('gocar.admin_path').'/login');
+        $this->line('Connectez-vous via : /'.config('andadoo.admin_path').'/login');
 
         return self::SUCCESS;
     }

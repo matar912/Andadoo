@@ -27,16 +27,19 @@ function isActive(href) {
 </script>
 
 <template>
-    <div class="min-h-screen bg-night-900">
+    <div class="min-h-screen bg-forest-900">
         <ToastContainer />
 
         <!-- Menu admin en haut, pleinement responsive : liens visibles des md,
              menu deroulant en dessous. -->
-        <header class="sticky top-0 z-40 border-b border-white/10 bg-night-700">
+        <header class="sticky top-0 z-40 border-b border-white/10 bg-forest-700">
             <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
                 <div class="flex items-center gap-8">
-                    <span class="font-display text-sm font-semibold uppercase tracking-widest text-sand-300">
-                        GO'CAR &middot; Portail interne
+                    <span class="flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-widest text-paper-300">
+                        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-paper-50 p-1">
+                            <img src="/images/logo-icon.png" alt="Andadoo" class="h-full w-full object-contain" />
+                        </span>
+                        Andadoo &middot; Portail interne
                     </span>
                     <nav class="hidden items-center gap-1 md:flex">
                         <Link
@@ -44,18 +47,18 @@ function isActive(href) {
                             :key="item.label"
                             :href="item.href"
                             class="relative rounded-full px-4 py-2 font-display text-sm font-medium transition-colors duration-150"
-                            :class="isActive(item.href) ? 'bg-runway-500 text-white' : 'text-sand-100/70 hover:bg-white/5 hover:text-white'"
+                            :class="isActive(item.href) ? 'bg-gold-500 text-white' : 'text-paper-100/70 hover:bg-white/5 hover:text-white'"
                         >
                             {{ item.label }}
                         </Link>
                     </nav>
                 </div>
 
-                <Link :href="`${adminBase()}/logout`" method="post" as="button" class="hidden text-sm font-display text-sand-100/60 hover:text-runway-400 md:inline-block">
+                <Link :href="`${adminBase()}/logout`" method="post" as="button" class="hidden text-sm font-display text-paper-100/60 hover:text-gold-400 md:inline-block">
                     Déconnexion
                 </Link>
 
-                <button @click="mobileOpen = !mobileOpen" class="flex h-9 w-9 items-center justify-center rounded-full text-sand-100 md:hidden" aria-label="Menu">
+                <button @click="mobileOpen = !mobileOpen" class="flex h-9 w-9 items-center justify-center rounded-full text-paper-100 md:hidden" aria-label="Menu">
                     <svg v-if="!mobileOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" class="h-6 w-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
                     </svg>
@@ -66,7 +69,7 @@ function isActive(href) {
             </div>
 
             <Transition name="slide">
-                <div v-if="mobileOpen" class="border-t border-white/10 bg-night-700 px-6 py-4 md:hidden">
+                <div v-if="mobileOpen" class="border-t border-white/10 bg-forest-700 px-6 py-4 md:hidden">
                     <nav class="flex flex-col gap-1">
                         <Link
                             v-for="item in navItems"
@@ -74,11 +77,11 @@ function isActive(href) {
                             :href="item.href"
                             @click="mobileOpen = false"
                             class="rounded-lg px-3 py-2 font-display text-sm font-medium"
-                            :class="isActive(item.href) ? 'bg-runway-500 text-white' : 'text-sand-100/70 hover:bg-white/5'"
+                            :class="isActive(item.href) ? 'bg-gold-500 text-white' : 'text-paper-100/70 hover:bg-white/5'"
                         >
                             {{ item.label }}
                         </Link>
-                        <Link :href="`${adminBase()}/logout`" method="post" as="button" class="rounded-lg px-3 py-2 text-left font-display text-sm font-medium text-sand-100/50">
+                        <Link :href="`${adminBase()}/logout`" method="post" as="button" class="rounded-lg px-3 py-2 text-left font-display text-sm font-medium text-paper-100/50">
                             Déconnexion
                         </Link>
                     </nav>
@@ -86,7 +89,7 @@ function isActive(href) {
             </Transition>
         </header>
 
-        <main class="mx-auto max-w-6xl px-4 py-8 text-sand-50 sm:px-6 sm:py-10">
+        <main class="mx-auto max-w-6xl px-4 py-8 text-paper-50 sm:px-6 sm:py-10">
             <slot />
         </main>
     </div>

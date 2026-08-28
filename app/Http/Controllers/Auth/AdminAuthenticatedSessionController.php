@@ -13,12 +13,12 @@ use Inertia\Response;
 class AdminAuthenticatedSessionController extends Controller
 {
     // Ecran de connexion propre a l'administration, jamais lie depuis le
-    // site public. L'URL elle-meme (voir config/gocar.php) fait office de
+    // site public. L'URL elle-meme (voir config/andadoo.php) fait office de
     // premiere barriere avant meme d'arriver sur ce formulaire.
     public function create(): Response
     {
         return Inertia::render('Admin/Login', [
-            'adminPath' => config('gocar.admin_path'),
+            'adminPath' => config('andadoo.admin_path'),
         ]);
     }
 

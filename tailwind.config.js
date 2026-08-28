@@ -15,20 +15,24 @@ export default {
                 sans: ['"Inter"', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                // Palette "escale nocturne" : nuit teal de l'Atlantique + sable chaud +
-                // orange coucher de soleil (piste d'aeroport / signal d'accueil).
-                night: {
-                    50: '#EAF3F1', 100: '#C7E0DB', 300: '#5F988E',
-                    500: '#0F3D3E', 700: '#0A2B2C', 900: '#061C1D',
+                // Palette extraite du logo Andadoo : vert forêt profond + or,
+                // sur fond creme chaud. "forest" = texte/fond sombre,
+                // "paper" = fond clair, "gold" = accent.
+                forest: {
+                    50: '#EAF2EF', 100: '#C7DED6', 300: '#5C8F80',
+                    500: '#0C3A30', 700: '#082D25', 900: '#012D27',
                 },
-                sand: {
-                    50: '#FBF7EF', 100: '#F3EAD3', 300: '#E4D2A4', 500: '#CBAE6B',
+                paper: {
+                    50: '#FDFBF6', 100: '#F6F1E6', 300: '#E8DFC8', 500: '#CBBB8E',
                 },
-                runway: {
-                    400: '#F2A24A', 500: '#E8792E', 600: '#C25B1B', 700: '#973F0F',
+                gold: {
+                    400: '#EEB548', 500: '#D89B2E', 600: '#C97D18', 700: '#9E6512',
                 },
             },
             borderRadius: { xl2: '1.25rem' },
+            boxShadow: {
+                card: '0 1px 2px rgba(1, 45, 39, 0.05), 0 8px 24px -8px rgba(1, 45, 39, 0.12)',
+            },
         },
     },
     plugins: [],
