@@ -1,0 +1,13 @@
+node_modules
+vendor
+storage/*.key
+Dockerfile
+.dockerignore
+.git
+.gitignore
+.env
+.env.example
+.idea
+.idea/**
+*.log
+*.sqlite
