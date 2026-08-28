@@ -1,95 +1,34 @@
+# ============================================================
+# Stage 1: Builder (Installation & Compilation Assets)
+# ============================================================
 FROM php:8.3-fpm-alpine AS builder
 
-# ---------- System packages & PHP extensions ----------
 RUN apk add --no-cache \
-    git \
-    curl \
-    libpng-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    oniguruma-dev \
-    icu-dev \
-    postgresql-dev \
-    autoconf \
-    gcc \
-    g++ \
-    make \
+    git curl libpng-dev libzip-dev zip unzip oniguruma-dev icu-dev postgresql-dev \
+    autoconf gcc g++ make nodejs npm \
     && docker-php-ext-configure zip \
-    && docker-php-ext-install \
-        pdo_pgsql \
-        pdo_mysql \
-        zip \
-        intl \
-        bcmath \
-        gd \
+    && docker-php-ext-install pdo_pgsql pdo_mysql zip intl bcmath gd \
     && docker-php-ext-enable opcache
 
-# ---------- Composer ----------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# ---------- Node.js & npm ----------
-RUN apk add --no-cache nodejs npm
 
 WORKDIR /app
 
-# ---------- PHP dependencies ----------
 COPY composer.json composer.lock artisan ./
+RUN composer install --no-dev --optimize-autoloader --prefer-dist --no-scripts
 
-# Install Composer dependencies without Laravel scripts
-RUN composer install \
-    --no-dev \
-    --optimize-autoloader \
-    --prefer-dist \
-    --no-scripts
-
-# ---------- Front-end dependencies ----------
 COPY package*.json ./
-
 RUN npm ci
 
-# ---------- Application code ----------
 COPY . .
-
-# ---------- Build frontend ----------
 RUN npm run build
 
-
 # ============================================================
-# Runtime image
+# Stage 2: Runtime (Nginx + PHP-FPM prêts pour la production)
 # ============================================================
-
-FROM php:8.3-fpm-alpine
+FROM serversideup/php:8.3-fpm-nginx
 
 WORKDIR /var/www/html
 
-# ---------- Runtime dependencies & PHP extensions ----------
-RUN apk add --no-cache \
-    libpng-dev \
-    libzip-dev \
-    zip \
-    unzip \
-    oniguruma-dev \
-    icu-dev \
-    postgresql-dev \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install \
-        pdo_pgsql \
-        pdo_mysql \
-        zip \
-        intl \
-        bcmath \
-        gd \
-    && docker-php-ext-enable opcache
-
-# ---------- Copy application ----------
-COPY --from=builder /app /var/www/html
-
-# ---------- Permissions ----------
-RUN chown -R www-data:www-data \
-    storage \
-    bootstrap/cache
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+# Copier l'application construite depuis le stage builder
+COPY --from=builder --chown=www-data:www-data /app /var/www/html
