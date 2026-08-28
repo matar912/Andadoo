@@ -162,6 +162,15 @@ Voir le diagramme ERD fourni dans la conversation. Points clés :
 
 ## Corrections et ajouts de cette session
 
+- **Catalogue client : tous les véhicules s'affichent désormais**, quel que soit leur statut
+  (`disponible`, `en_location`, `maintenance`) — seul `hors_service` (véhicule retiré
+  définitivement par l'admin) reste caché. La disponibilité réelle pour une réservation continue
+  d'être vérifiée par période de dates (`Vehicle::isAvailableBetween`), pas par ce statut global.
+  Un badge discret signale sur la carte quand un véhicule est actuellement en location ou en
+  maintenance, sans empêcher de le consulter ou de tenter une réservation sur d'autres dates.
+- **Recherche multi-critères** sur `/vehicules` : texte libre (marque/modèle), catégorie,
+  transmission, nombre de places minimum, fourchette de prix (filtres avancés dépliables).
+
 - **Disponibilité par dates, pas par statut global** : un véhicule "disponible" peut désormais
   être déjà réservé du 12 au 15 tout en restant réservable du 20 au 25. La validation d'une
   réservation par l'admin ne bloque plus plus le véhicule entier — c'est
