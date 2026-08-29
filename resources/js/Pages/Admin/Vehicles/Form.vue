@@ -5,8 +5,13 @@ import AdminLayout from '@/Layouts/AdminLayout.vue';
 
 const props = defineProps({ vehicle: Object });
 const page = usePage();
-const adminBase = () => `/${page.props.adminPath ?? ''}`;
 const isEdit = !!props.vehicle;
+
+// Nettoyage de l'URL de base pour éviter les erreurs 404 dues à un double slash
+const adminBase = computed(() => {
+    const raw = (page.props.adminPath ?? 'andadoo-portail-9f3k').toString();
+    return '/' + raw.replace(/^\/+|\/+$/g, '');
+});
 
 const form = useForm({
     _method: isEdit ? 'PUT' : 'POST',
@@ -41,10 +46,14 @@ function onPhotoChange(e) {
 }
 
 function submit() {
-    const url = isEdit ? `${adminBase()}/vehicules/${props.vehicle.id}` : `${adminBase()}/vehicules`;
+    const url = isEdit
+        ? `${adminBase.value}/vehicules/${props.vehicle.id}`
+        : `${adminBase.value}/vehicules`;
 
+    // Toujours utiliser form.post() : Inertia injecte _method: 'PUT' dans le FormData
     form.post(url, {
         forceFormData: true,
+        preserveScroll: true,
     });
 }
 </script>
@@ -86,6 +95,7 @@ function submit() {
                 <div>
                     <label class="text-xs uppercase tracking-wide text-paper-100/60">Modèle</label>
                     <input v-model="form.model" type="text" required class="mt-1 w-full rounded-lg border-white/10 bg-forest-900 text-white focus:border-gold-400 focus:ring-gold-400" />
+                    <p v-if="form.errors.model" class="mt-1 text-xs text-gold-400">{{ form.errors.model }}</p>
                 </div>
                 <div>
                     <label class="text-xs uppercase tracking-wide text-paper-100/60">Année</label>
@@ -120,6 +130,7 @@ function submit() {
                 <div>
                     <label class="text-xs uppercase tracking-wide text-paper-100/60">Prix / jour (FCFA)</label>
                     <input v-model.number="form.daily_price" type="number" min="0" required class="mt-1 w-full rounded-lg border-white/10 bg-forest-900 text-white focus:border-gold-400 focus:ring-gold-400" />
+                    <p v-if="form.errors.daily_price" class="mt-1 text-xs text-gold-400">{{ form.errors.daily_price }}</p>
                 </div>
 
                 <div class="sm:col-span-2">
@@ -130,9 +141,6 @@ function submit() {
                         <option value="maintenance">En maintenance</option>
                         <option value="hors_service">Hors service</option>
                     </select>
-                    <p class="mt-1 text-xs text-paper-100/50">
-                        Seuls les véhicules "disponible" apparaissent dans le catalogue client.
-                    </p>
                 </div>
 
                 <div class="sm:col-span-2">
