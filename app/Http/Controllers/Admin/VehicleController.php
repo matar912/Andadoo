@@ -35,7 +35,7 @@ class VehicleController extends Controller
         $data['uuid'] = (string) Str::uuid();
 
         if ($request->hasFile('photo')) {
-            $data['photo_path'] = $request->file('photo')->store('vehicles', 'public');
+            $data['photo_path'] = $request->file('photo')->store('vehicles', config('filesystems.default'));
         }
 
         Vehicle::create($data);
@@ -56,9 +56,9 @@ class VehicleController extends Controller
             // On remplace : l'ancienne photo est supprimee du disque pour ne pas
             // accumuler des fichiers orphelins.
             if ($vehicle->photo_path) {
-                Storage::disk('public')->delete($vehicle->photo_path);
+                Storage::disk(config('filesystems.default'))->delete($vehicle->photo_path);
             }
-            $data['photo_path'] = $request->file('photo')->store('vehicles', 'public');
+            $data['photo_path'] = $request->file('photo')->store('vehicles', config('filesystems.default'));
         }
 
         $vehicle->update($data);
@@ -77,7 +77,7 @@ class VehicleController extends Controller
         }
 
         if ($vehicle->photo_path) {
-            Storage::disk('public')->delete($vehicle->photo_path);
+            Storage::disk(config('filesystems.default'))->delete($vehicle->photo_path);
         }
 
         $vehicle->delete();

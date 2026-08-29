@@ -21,9 +21,11 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/vehicule-photo/{path}', function (string $path) {
-    abort_unless(Storage::disk('public')->exists($path), 404);
+    $disk = Storage::disk(config('filesystems.default'));
 
-    return Storage::disk('public')->response($path);
+    abort_unless($disk->exists($path), 404);
+
+    return $disk->response($path);
 })->where('path', '.*')->name('vehicles.photo');
 
 /*
