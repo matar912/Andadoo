@@ -3,6 +3,11 @@ import { Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({ vehicle: Object });
+
+function getPhotoUrl(photoPath) {
+    if (!photoPath) return null;
+    return photoPath.startsWith('http') ? photoPath : `/vehicule-photo/${photoPath}`;
+}
 </script>
 
 <template>
@@ -12,7 +17,7 @@ defineProps({ vehicle: Object });
 
             <div class="card mt-4 overflow-hidden md:grid md:grid-cols-2">
                 <div class="flex h-64 items-center justify-center bg-paper-100 md:h-full">
-                    <img v-if="vehicle.photo_path" :src="`/vehicule-photo/${vehicle.photo_path}`" :alt="`${vehicle.brand} ${vehicle.model}`" class="h-full w-full object-cover" />
+                    <img v-if="vehicle.photo_path" :src="getPhotoUrl(vehicle.photo_path)" :alt="`${vehicle.brand} ${vehicle.model}`" class="h-full w-full object-cover" />
                     <span v-else class="font-display text-forest-300">{{ vehicle.brand }} {{ vehicle.model }}</span>
                 </div>
 
@@ -24,7 +29,7 @@ defineProps({ vehicle: Object });
                     <p v-if="vehicle.description" class="mt-4 text-sm leading-relaxed text-forest-500/80">{{ vehicle.description }}</p>
 
                     <div class="mt-6 flex items-center justify-between border-t border-forest-500/10 pt-6">
-                        <span class="font-display text-2xl font-bold text-gold-600">{{ vehicle.daily_price }} FCFA<span class="text-sm font-normal text-forest-500/50">/jour</span></span>
+                        <span class="font-display text-2xl font-bold text-gold-600">{{ vehicle.daily_price?.toLocaleString('fr-FR') }} FCFA<span class="text-sm font-normal text-forest-500/50">/jour</span></span>
                         <Link :href="`/reservations/nouvelle?vehicle_id=${vehicle.id}`" class="btn-primary">Réserver</Link>
                     </div>
                 </div>

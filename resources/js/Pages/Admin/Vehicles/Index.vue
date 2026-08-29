@@ -17,6 +17,11 @@ const statusStyle = {
     hors_service: 'bg-white/10 text-paper-100/50',
 };
 
+function getPhotoUrl(photoPath) {
+    if (!photoPath) return null;
+    return photoPath.startsWith('http') ? photoPath : `/vehicule-photo/${photoPath}`;
+}
+
 async function remove(vehicle) {
     const hasReservations = vehicle.reservations_count > 0;
 
@@ -72,15 +77,16 @@ async function remove(vehicle) {
                         :class="{ 'opacity-40': v.status === 'hors_service' || removingId === v.id }"
                     >
                         <td class="px-4 py-3">
-                            <div class="h-12 w-16 overflow-hidden rounded bg-forest-900">
-                                <img v-if="v.photo_path" :src="`/vehicule-photo/${v.photo_path}`" class="h-full w-full object-cover" />
+                            <div class="h-12 w-16 overflow-hidden rounded bg-forest-900 flex items-center justify-center">
+                                <img v-if="v.photo_path" :src="getPhotoUrl(v.photo_path)" :alt="`${v.brand} ${v.model}`" class="h-full w-full object-cover" />
+                                <span v-else class="text-[10px] font-display text-paper-100/40 uppercase">{{ v.brand?.slice(0, 3) }}</span>
                             </div>
                         </td>
                         <td class="px-4 py-3 text-white">{{ v.brand }} {{ v.model }} <span class="text-paper-100/40">({{ v.year }})</span></td>
                         <td class="px-4 py-3 capitalize text-paper-100/80">{{ v.category }}</td>
-                        <td class="px-4 py-3 text-paper-100/80">{{ v.daily_price }} FCFA</td>
+                        <td class="px-4 py-3 text-paper-100/80">{{ v.daily_price?.toLocaleString('fr-FR') }} FCFA</td>
                         <td class="px-4 py-3">
-                            <span class="rounded-full px-2 py-1 text-xs capitalize" :class="statusStyle[v.status]">{{ v.status.replace('_', ' ') }}</span>
+                            <span class="rounded-full px-2.5 py-1 text-xs capitalize" :class="statusStyle[v.status]">{{ v.status.replace('_', ' ') }}</span>
                         </td>
                         <td class="px-4 py-3 text-right">
                             <span v-if="removingId === v.id" class="text-xs text-paper-100/40">Traitement...</span>

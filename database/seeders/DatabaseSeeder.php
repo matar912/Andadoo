@@ -12,8 +12,8 @@ use App\Models\Review;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => Str::uuid(),
             'name' => 'Administrateur GO CAR',
             'email' => 'matar9@gmail.com',
-            'password' => '12345678',
+            'password' => Hash::make('12345678'),
             'role' => 'admin',
             'phone' => '+221770000001',
             'locale' => 'fr',
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => Str::uuid(),
             'name' => 'Matar Gueye',
             'email' => 'matar@gmail.com',
-            'password' => '12345678',
+            'password' => Hash::make('12345678'),
             'role' => 'client',
             'phone' => '+221770000002',
             'locale' => 'fr',
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => Str::uuid(),
             'name' => 'Awa Diop',
             'email' => 'awa@gmail.com',
-            'password' => '12345678',
+            'password' => Hash::make('12345678'),
             'role' => 'client',
             'phone' => '+221770000003',
             'locale' => 'fr',
@@ -64,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => Str::uuid(),
             'name' => 'Ibrahima Fall',
             'email' => 'ibrahima@gmail.com',
-            'password' => '12345678',
+            'password' => Hash::make('12345678'),
             'role' => 'client',
             'phone' => '+221770000004',
             'locale' => 'fr',
@@ -73,7 +73,7 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | CHAUFFEURS
+        | CHAUFFEURS (USERS)
         |--------------------------------------------------------------------------
         */
 
@@ -81,7 +81,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => Str::uuid(),
             'name' => 'Ousmane Ndiaye',
             'email' => 'ousmane@gmail.com',
-            'password' => '12345678',
+            'password' => Hash::make('12345678'),
             'role' => 'driver',
             'phone' => '+221770000005',
             'locale' => 'fr',
@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
             'uuid' => Str::uuid(),
             'name' => 'Cheikh Sow',
             'email' => 'cheikh@gmail.com',
-            'password' => '12345678',
+            'password' => Hash::make('12345678'),
             'role' => 'driver',
             'phone' => '+221770000006',
             'locale' => 'fr',
@@ -140,7 +140,7 @@ class DatabaseSeeder extends Seeder
             'transmission' => 'automatique',
             'daily_price' => 35000,
             'status' => 'disponible',
-            'photo_path' => 'vehicles/toyota-corolla.jpg',
+            'photo_path' => 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=800&q=80',
             'description' => 'Berline confortable et économique.',
         ]);
 
@@ -155,7 +155,7 @@ class DatabaseSeeder extends Seeder
             'transmission' => 'automatique',
             'daily_price' => 55000,
             'status' => 'disponible',
-            'photo_path' => 'vehicles/toyota-rav4.jpg',
+            'photo_path' => 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80',
             'description' => 'SUV moderne idéal pour les déplacements professionnels.',
         ]);
 
@@ -170,7 +170,7 @@ class DatabaseSeeder extends Seeder
             'transmission' => 'automatique',
             'daily_price' => 50000,
             'status' => 'disponible',
-            'photo_path' => 'vehicles/hyundai-tucson.jpg',
+            'photo_path' => 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80',
             'description' => 'SUV spacieux et confortable.',
         ]);
 
@@ -185,7 +185,7 @@ class DatabaseSeeder extends Seeder
             'transmission' => 'automatique',
             'daily_price' => 85000,
             'status' => 'en_location',
-            'photo_path' => 'vehicles/mercedes-classe-e.jpg',
+            'photo_path' => 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80',
             'description' => 'Berline haut de gamme avec intérieur premium.',
         ]);
 
@@ -200,7 +200,7 @@ class DatabaseSeeder extends Seeder
             'transmission' => 'manuelle',
             'daily_price' => 60000,
             'status' => 'disponible',
-            'photo_path' => 'vehicles/toyota-hilux.jpg',
+            'photo_path' => 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80',
             'description' => '4x4 robuste adapté aux longues distances.',
         ]);
 
@@ -215,7 +215,7 @@ class DatabaseSeeder extends Seeder
             'transmission' => 'manuelle',
             'daily_price' => 75000,
             'status' => 'maintenance',
-            'photo_path' => 'vehicles/hyundai-h1.jpg',
+            'photo_path' => 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
             'description' => 'Minibus idéal pour les déplacements en groupe.',
         ]);
 
@@ -407,29 +407,11 @@ class DatabaseSeeder extends Seeder
         |--------------------------------------------------------------------------
         */
 
-        $reservation1->options()->attach([
-            $option2->id,
-            $option5->id,
-        ]);
-
-        $reservation2->options()->attach([
-            $option3->id,
-            $option4->id,
-        ]);
-
-        $reservation3->options()->attach([
-            $option5->id,
-        ]);
-
-        $reservation4->options()->attach([
-            $option4->id,
-            $option6->id,
-        ]);
-
-        $reservation5->options()->attach([
-            $option2->id,
-            $option5->id,
-        ]);
+        $reservation1->options()->attach([$option2->id, $option5->id]);
+        $reservation2->options()->attach([$option3->id, $option4->id]);
+        $reservation3->options()->attach([$option5->id]);
+        $reservation4->options()->attach([$option4->id, $option6->id]);
+        $reservation5->options()->attach([$option2->id, $option5->id]);
 
         /*
         |--------------------------------------------------------------------------
@@ -550,7 +532,7 @@ class DatabaseSeeder extends Seeder
 
         /*
         |--------------------------------------------------------------------------
-        | MESSAGE
+        | MESSAGE DE FIN
         |--------------------------------------------------------------------------
         */
 

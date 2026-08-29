@@ -5,6 +5,11 @@ import ReservationTimeline from '@/Components/ReservationTimeline.vue';
 
 const props = defineProps({ reservation: Object });
 
+function getPhotoUrl(photoPath) {
+    if (!photoPath) return null;
+    return photoPath.startsWith('http') ? photoPath : `/vehicule-photo/${photoPath}`;
+}
+
 const statusInfo = {
     en_attente: { label: 'En attente de validation par GO\'CAR', style: 'bg-gold-500/10 text-gold-700' },
     confirmee: { label: 'Confirmée', style: 'bg-emerald-500/10 text-emerald-700' },
@@ -20,11 +25,16 @@ const statusInfo = {
             <h1 class="font-display text-2xl font-bold text-forest-500">Votre demande de réservation</h1>
 
             <div class="card mt-6 overflow-hidden">
-                <div class="bg-forest-500 p-6 text-paper-100">
-                    <p class="font-display text-xs uppercase tracking-widest text-gold-400">Andadoo</p>
-                    <p class="mt-2 font-display text-xl font-bold text-white">
-                        {{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}
-                    </p>
+                <div class="relative bg-forest-500 p-6 text-paper-100">
+                    <div v-if="reservation.vehicle?.photo_path" class="absolute inset-0 opacity-20">
+                        <img :src="getPhotoUrl(reservation.vehicle.photo_path)" :alt="`${reservation.vehicle.brand} ${reservation.vehicle.model}`" class="h-full w-full object-cover" />
+                    </div>
+                    <div class="relative z-10">
+                        <p class="font-display text-xs uppercase tracking-widest text-gold-400">Andadoo</p>
+                        <p class="mt-2 font-display text-xl font-bold text-white">
+                            {{ reservation.vehicle.brand }} {{ reservation.vehicle.model }}
+                        </p>
+                    </div>
                 </div>
 
                 <div class="space-y-6 p-6">
@@ -48,7 +58,7 @@ const statusInfo = {
                         </div>
                         <div>
                             <dt class="text-forest-500/50">Total</dt>
-                            <dd class="text-forest-500">{{ reservation.total_price }} FCFA</dd>
+                            <dd class="text-forest-500 font-semibold text-gold-600">{{ reservation.total_price?.toLocaleString('fr-FR') }} FCFA</dd>
                         </div>
                         <div>
                             <dt class="text-forest-500/50">Arrivée</dt>

@@ -4,6 +4,11 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 
 defineProps({ reservations: Object });
 
+function getPhotoUrl(photoPath) {
+    if (!photoPath) return null;
+    return photoPath.startsWith('http') ? photoPath : `/vehicule-photo/${photoPath}`;
+}
+
 const statusStyle = {
     en_attente: 'bg-gold-500/10 text-gold-700',
     confirmee: 'bg-emerald-500/10 text-emerald-700',
@@ -11,6 +16,7 @@ const statusStyle = {
     terminee: 'bg-forest-500/10 text-forest-500',
     annulee: 'bg-red-500/10 text-red-700',
 };
+
 const statusLabels = {
     en_attente: 'En attente',
     confirmee: 'Confirmée',
@@ -31,13 +37,20 @@ const statusLabels = {
                     v-for="r in reservations.data"
                     :key="r.id"
                     :href="`/reservations/${r.id}`"
-                    class="card flex items-center justify-between p-5 transition hover:shadow-md"
+                    class="card flex items-center justify-between p-4 transition hover:shadow-md"
                 >
-                    <div>
-                        <p class="font-display font-semibold text-forest-700">{{ r.vehicle.brand }} {{ r.vehicle.model }}</p>
-                        <p class="mt-1 text-sm text-forest-500/60">{{ r.start_at?.slice(0, 10) }} → {{ r.end_at?.slice(0, 10) }}</p>
+                    <div class="flex items-center gap-4">
+                        <div class="h-14 w-20 shrink-0 overflow-hidden rounded-lg bg-paper-100 flex items-center justify-center">
+                            <img v-if="r.vehicle?.photo_path" :src="getPhotoUrl(r.vehicle.photo_path)" :alt="`${r.vehicle.brand} ${r.vehicle.model}`" class="h-full w-full object-cover" />
+                            <span v-else class="text-xs font-display text-forest-300">{{ r.vehicle?.brand }}</span>
+                        </div>
+                        <div>
+                            <p class="font-display font-semibold text-forest-700">{{ r.vehicle?.brand }} {{ r.vehicle?.model }}</p>
+                            <p class="mt-0.5 text-xs text-forest-500/60">{{ r.start_at?.slice(0, 10) }} &rarr; {{ r.end_at?.slice(0, 10) }}</p>
+                            <p v-if="r.total_price" class="mt-0.5 text-xs font-semibold text-gold-600">{{ r.total_price?.toLocaleString('fr-FR') }} FCFA</p>
+                        </div>
                     </div>
-                    <span class="rounded-full px-3 py-1 text-xs font-display font-semibold" :class="statusStyle[r.status]">
+                    <span class="shrink-0 rounded-full px-3 py-1 text-xs font-display font-semibold" :class="statusStyle[r.status]">
                         {{ statusLabels[r.status] }}
                     </span>
                 </Link>
