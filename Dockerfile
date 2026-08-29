@@ -32,3 +32,11 @@ WORKDIR /var/www/html
 
 # Copier l'application construite depuis le stage builder
 COPY --from=builder --chown=www-data:www-data /app /var/www/html
+
+# Automatiser les migrations et le cache au démarrage du conteneur
+RUN echo '#!/bin/sh' > /etc/entrypoint.d/99-laravel-deploy.sh \
+    && echo 'php artisan migrate --force' >> /etc/entrypoint.d/99-laravel-deploy.sh \
+    && echo 'php artisan config:cache' >> /etc/entrypoint.d/99-laravel-deploy.sh \
+    && echo 'php artisan route:cache' >> /etc/entrypoint.d/99-laravel-deploy.sh \
+    && echo 'php artisan view:cache' >> /etc/entrypoint.d/99-laravel-deploy.sh \
+    && chmod +x /etc/entrypoint.d/99-laravel-deploy.sh
