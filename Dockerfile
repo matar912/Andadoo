@@ -28,6 +28,9 @@ RUN npm run build
 # ============================================================
 FROM serversideup/php:8.3-fpm-nginx
 
+# Passer temporairement en root pour modifier la configuration système
+USER root
+
 WORKDIR /var/www/html
 
 # Copier l'application construite depuis le stage builder
@@ -40,3 +43,6 @@ RUN echo '#!/bin/sh' > /etc/entrypoint.d/99-laravel-deploy.sh \
     && echo 'php artisan route:cache' >> /etc/entrypoint.d/99-laravel-deploy.sh \
     && echo 'php artisan view:cache' >> /etc/entrypoint.d/99-laravel-deploy.sh \
     && chmod +x /etc/entrypoint.d/99-laravel-deploy.sh
+
+# Revenir à l'utilisateur non-root pour la sécurité
+USER www-data
