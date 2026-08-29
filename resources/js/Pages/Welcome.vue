@@ -14,10 +14,30 @@ function submitSearch() {
 }
 
 const categories = [
-    { key: 'citadine', label: 'Citadines', from: '25 000' },
-    { key: 'berline', label: 'Berlines', from: '35 000' },
-    { key: 'suv', label: 'SUV & 4x4', from: '45 000' },
-    { key: 'minibus', label: 'Minibus', from: '60 000' },
+    {
+        key: 'citadine',
+        label: 'Citadines',
+        from: '25 000',
+        image: 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+        key: 'berline',
+        label: 'Berlines',
+        from: '35 000',
+        image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+        key: 'suv',
+        label: 'SUV & 4x4',
+        from: '45 000',
+        image: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+        key: 'minibus',
+        label: 'Minibus',
+        from: '60 000',
+        image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80',
+    },
 ];
 </script>
 
@@ -99,7 +119,7 @@ const categories = [
             </div>
         </section>
 
-        <!-- Bandeau de reassurance -->
+        <!-- Bandeau de réassurance -->
         <section class="border-y border-forest-500/10 bg-white">
             <div class="mx-auto grid max-w-6xl gap-8 px-6 py-10 sm:grid-cols-2 lg:grid-cols-4">
                 <div v-for="item in [
@@ -114,7 +134,7 @@ const categories = [
             </div>
         </section>
 
-        <!-- Categories + Comment ca marche -->
+        <!-- Catégories + Comment ça marche -->
         <section class="mx-auto max-w-6xl px-6 py-20">
             <div class="grid gap-10 lg:grid-cols-[1fr_320px]">
                 <div>
@@ -129,9 +149,16 @@ const categories = [
                             v-for="cat in categories"
                             :key="cat.key"
                             :href="`/vehicules?category=${cat.key}`"
-                            class="card overflow-hidden"
+                            class="card group overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                         >
-                            <div class="flex h-28 items-center justify-center bg-paper-100 font-display text-forest-300">{{ cat.label }}</div>
+                            <div class="h-36 w-full overflow-hidden bg-paper-100">
+                                <img
+                                    :src="cat.image"
+                                    :alt="cat.label"
+                                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    loading="lazy"
+                                />
+                            </div>
                             <div class="p-4">
                                 <p class="font-display font-semibold text-forest-700">{{ cat.label }}</p>
                                 <p class="mt-0.5 text-xs text-forest-500/60">À partir de {{ cat.from }} FCFA / jour</p>
