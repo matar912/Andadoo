@@ -32,7 +32,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => ['user' => $request->user()?->only('id', 'name', 'email', 'role')],
-            'adminPath' => config('andadoo.admin_path'),
+            'adminPath' => 'andadoo-admin',
             'flash' => ['success' => fn () => $request->session()->get('success')],
         ];
     }

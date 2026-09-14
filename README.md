@@ -204,10 +204,49 @@ Voir le diagramme ERD fourni dans la conversation. Points clés :
   (fond clair chaud), `gold` (accent). Extraite directement des couleurs du logo fourni.
 - **Typographie** : Space Grotesk (titres) + Inter (texte courant), inchangée.
 
-## Prochaines étapes suggérées
+## Nouveaux modules ajoutés
+
+- **Options de réservation** : gestion admin (`/{admin}/options`) + sélection client au moment de
+  réserver, avec calcul du prix en direct. S'appuie sur les tables `options` et
+  `option_reservation` déjà présentes depuis le départ.
+- **Partenaires commerciaux** : gestion admin (`/{admin}/partenaires`) + attribution optionnelle
+  d'une réservation à une agence/hôtel partenaire. S'appuie sur la table `partners`.
+- **Paiement** (`/reservations/{id}/paiement`) : le client choisit une méthode (Wave, Orange
+  Money, Free Money, ou carte si Stripe est configuré), déclare avoir payé avec une référence,
+  et l'admin vérifie/confirme manuellement depuis `/{admin}/paiements`. **Stripe ne supporte pas
+  le Franc CFA (XOF)** — le paiement carte reste désactivé tant que `STRIPE_KEY`/`STRIPE_SECRET`
+  ne sont pas renseignés, et même alors il faudra une conversion de devise ou un switch vers un
+  agrégateur local (CinetPay, PayDunya) qui gère le XOF nativement, carte incluse.
+
+### Nouvelles variables d'environnement (optionnelles)
+
+```
+WAVE_MERCHANT_NUMBER=771234567
+ORANGE_MONEY_MERCHANT_NUMBER=771234567
+FREE_MONEY_MERCHANT_NUMBER=771234567
+STRIPE_KEY=
+STRIPE_SECRET=
+```
+
+### Étape supplémentaire pour Stripe (si vous l'activez plus tard)
+
+```bash
+composer require stripe/php-stripe
+```
+Puis ajoutez l'entrée `'stripe' => [...]` de `config/services-stripe-snippet.php` dans votre
+`config/services.php` existant (ne remplacez pas le fichier, fusionnez juste cette entrée).
 
 1. Seeders de démonstration (quelques véhicules + réservations d'exemple) pour tester sans tout saisir à la main.
 2. Étendre le style "wizard" (étapes) au formulaire de réservation lui-même (actuellement un seul long formulaire).
 3. Tableaux admin : recherche, tri, pagination visible (actuellement pagination silencieuse côté backend).
 4. Activation du paiement quand le besoin sera confirmé.
 5. 2FA sur le compte admin (Laravel Fortify) avant mise en production.
+
+## Prochaines étapes suggérées
+
+1. Seeders de démonstration (véhicules, options, partenaires, réservations d'exemple).
+2. Policies (`ReservationPolicy`) et tests automatisés (Pest/PHPUnit).
+3. Notifications e-mail/SMS lors des changements de statut (réservation validée, paiement confirmé).
+4. Avis clients (`reviews`, déjà modélisé, pas encore exposé dans l'interface).
+5. Agrégateur de paiement réel (CinetPay/PayDunya) pour remplacer la vérification manuelle.
+6. 2FA sur le compte admin (Laravel Fortify) avant mise en production.

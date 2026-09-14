@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class VehicleController extends Controller
 {
@@ -17,7 +16,7 @@ class VehicleController extends Controller
     // des dates choisies, verifiee au moment de la reservation
     // (Vehicle::isAvailableBetween). Seul "hors_service" (vehicule retire
     // definitivement de la flotte active par l'admin) reste cache.
-    public function index(Request $request): Response
+    public function index(Request $request)
     {
         $vehicles = Vehicle::query()
             ->where('status', '!=', 'hors_service')
@@ -42,15 +41,10 @@ class VehicleController extends Controller
         ]);
     }
 
-    public function show(Vehicle $vehicle): Response
+    public function show(Vehicle $vehicle)
     {
-        if ($vehicle->status === 'hors_service') {
-            abort(404);
-        }
-
         return Inertia::render('Vehicles/Show', [
             'vehicle' => $vehicle,
-            'bookedRanges' => $vehicle->bookedRanges ?? [],
         ]);
     }
 }

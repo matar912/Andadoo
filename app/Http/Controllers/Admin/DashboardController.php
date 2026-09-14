@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\Reservation;
 use App\Models\Vehicle;
 use Inertia\Inertia;
@@ -19,6 +20,7 @@ class DashboardController extends Controller
                 'vehicles_available' => Vehicle::available()->count(),
                 'reservations_pending' => Reservation::where('status', 'en_attente')->count(),
                 'reservations_active' => Reservation::where('status', 'en_cours')->count(),
+                'payments_pending' => Payment::where('status', 'en_attente')->count(),
                 'revenue_month' => Reservation::whereMonth('created_at', now()->month)->sum('total_price'),
             ],
             'recent_reservations' => Reservation::with(['client', 'vehicle'])
