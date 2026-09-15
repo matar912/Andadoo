@@ -14,9 +14,31 @@ class Vehicle extends Model
         'seats', 'transmission', 'daily_price', 'status', 'photo_path', 'description',
     ];
 
+    // 1. OBLIGATOIRE : Force Laravel à inclure photo_url dans les données envoyées à Inertia / Vue
+    protected $appends = ['photo_url'];
+
     protected function casts(): array
     {
         return ['daily_price' => 'decimal:2'];
+    }
+
+    // 2. OBLIGATOIRE : Construit l'URL complète vers Supabase Storage
+    public function getPhotoUrlAttribute(): ?string
+    {
+        if (! $this->photo_path) {
+            return null;
+        }
+
+        // Si c'est une URL externe complète (ex: Unsplash)
+        if (filter_var($this->photo_path, FILTER_VALIDATE_URL)) {
+            return $this->photo_path;
+        }
+
+        $supabaseUrl = env('SUPABASE_URL', 'https://kjcsubbrvcpfuyeyfjwa.supabase.co');
+        $bucket = env('AWS_BUCKET', 'images');
+        $path = ltrim($this->photo_path, '/');
+
+        return "{$supabaseUrl}/storage/v1/object/public/{$bucket}/{$path}";
     }
 
     public function reservations()
@@ -34,11 +56,6 @@ class Vehicle extends Model
         return $query->where('status', 'disponible');
     }
 
-    // Verifie qu'aucune reservation active (en attente ou confirmee) de ce
-    // vehicule ne chevauche la periode demandee. C'est ce controle, et non
-    // le statut global du vehicule, qui determine la disponibilite reelle
-    // pour des dates precises : un vehicule "disponible" peut deja etre pris
-    // du 12 au 15, tout en restant reservable du 20 au 25.
     public function isAvailableBetween(string $start, string $end, ?int $ignoreReservationId = null): bool
     {
         return ! $this->reservations()
@@ -49,7 +66,6 @@ class Vehicle extends Model
             ->exists();
     }
 
-    // Periodes deja occupees, pour affichage cote client avant meme qu'il choisisse ses dates.
     public function bookedRanges()
     {
         return $this->reservations()
