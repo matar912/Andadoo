@@ -25,7 +25,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/vehicule-photo/{path}', function (string $path) {
-    $disk = Storage::disk(config('filesystems.default'));
+    $disk = Storage::disk('public');
 
     abort_unless($disk->exists($path), 404);
 

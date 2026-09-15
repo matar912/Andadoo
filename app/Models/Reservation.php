@@ -12,7 +12,7 @@ class Reservation extends Model
     protected $fillable = [
         'uuid', 'client_id', 'vehicle_id', 'driver_id', 'partner_id', 'formula',
         'with_driver', 'flight_number', 'pickup_location', 'dropoff_location',
-        'start_at', 'end_at', 'status', 'total_price',
+        'start_at', 'end_at', 'status', 'total_price', 'driver_license_path', 'damage_agreement',
     ];
 
     protected function casts(): array

@@ -16,10 +16,11 @@ const form = useForm({
     end_at: '',
     partner_id: '',
     options: [],
+    driver_license: null,
+    damage_agreement: false,
 });
 
 // Nombre de jours et estimation du prix en direct, options comprises.
-// Le montant definitif reste calcule et verifie cote serveur.
 const days = computed(() => {
     if (!form.start_at || !form.end_at) return 0;
     const diff = (new Date(form.end_at) - new Date(form.start_at)) / 86400000;
@@ -28,7 +29,9 @@ const days = computed(() => {
 const optionsTotal = computed(() =>
     props.options.filter((o) => form.options.includes(o.id)).reduce((sum, o) => sum + Number(o.extra_price), 0)
 );
-const estimatedTotal = computed(() => days.value * Number(props.vehicle.daily_price) + optionsTotal.value);
+// Add driver fee when with_driver is true
+const driverFee = computed(() => (form.with_driver ? 7000 : 0));
+const estimatedTotal = computed(() => days.value * Number(props.vehicle.daily_price) + optionsTotal.value + driverFee.value);
 
 function toggleOption(id) {
     const i = form.options.indexOf(id);
