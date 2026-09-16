@@ -45,7 +45,7 @@ class VehicleController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $validated['photo_path'] = $request->file('photo')->store('vehicles', 's3');
+            $validated['photo_path'] = $request->file('photo')->store('vehicles', 'supabase');
         }
 
         Vehicle::create($validated);
@@ -78,9 +78,9 @@ class VehicleController extends Controller
 
         if ($request->hasFile('photo')) {
             if ($vehicle->photo_path && !filter_var($vehicle->photo_path, FILTER_VALIDATE_URL)) {
-                Storage::disk('s3')->delete($vehicle->photo_path);
+                Storage::disk('supabase')->delete($vehicle->photo_path);
             }
-            $validated['photo_path'] = $request->file('photo')->store('vehicles', 's3');
+            $validated['photo_path'] = $request->file('photo')->store('vehicles', 'supabase');
         }
 
         $vehicle->update($validated);

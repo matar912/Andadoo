@@ -3,7 +3,7 @@ const props = defineProps({ status: String });
 
 const steps = [
     { key: 'en_attente', label: 'Demande envoyée' },
-    { key: 'confirmee', label: 'Confirmée par GO\u2019CAR' },
+    { key: 'confirmee', label: 'Confirmée par Andadoo' },
     { key: 'en_cours', label: 'Séjour en cours' },
     { key: 'terminee', label: 'Terminée' },
 ];

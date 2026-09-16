@@ -73,7 +73,7 @@ async function remove(vehicle) {
                     >
                         <td class="px-4 py-3">
                             <div class="h-12 w-16 overflow-hidden rounded bg-forest-900">
-                                <img v-if="v.photo_path" :src="`/vehicule-photo/${v.photo_path}`" class="h-full w-full object-cover" />
+                                <img v-if="v.photo_url" :src="v.photo_url" class="h-full w-full object-cover" />
                             </div>
                         </td>
                         <td class="px-4 py-3 text-white">{{ v.brand }} {{ v.model }} <span class="text-paper-100/40">({{ v.year }})</span></td>
