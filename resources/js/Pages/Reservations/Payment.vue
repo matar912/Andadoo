@@ -8,14 +8,12 @@ const props = defineProps({
     alreadyPaid: Boolean,
     pendingPayment: Object,
     mobileMoneyNumbers: Object,
-    cardEnabled: Boolean,
 });
 
 const methods = [
     { key: 'wave', label: 'Wave' },
     { key: 'orange_money', label: 'Orange Money' },
     { key: 'free_money', label: 'Free Money' },
-    { key: 'carte', label: 'Carte bancaire' },
 ];
 
 const form = useForm({ method: 'wave', transaction_ref: '' });
@@ -57,27 +55,23 @@ function submit() {
                             v-for="m in methods"
                             :key="m.key"
                             type="button"
-                            :disabled="m.key === 'carte' && !cardEnabled"
                             @click="form.method = m.key"
-                            class="rounded-lg border px-4 py-3 text-sm font-display font-medium transition disabled:cursor-not-allowed disabled:opacity-40"
+                            class="rounded-lg border px-4 py-3 text-sm font-display font-medium transition"
                             :class="form.method === m.key ? 'border-gold-500 bg-gold-500/10 text-gold-700' : 'border-forest-500/15 text-forest-500'"
                         >
                             {{ m.label }}
                         </button>
                     </div>
-                    <p v-if="form.method === 'carte' && !cardEnabled" class="mt-1 text-xs text-forest-500/50">
-                        Paiement par carte bientôt disponible — contactez-nous en attendant.
-                    </p>
                 </div>
 
-                <div v-if="form.method !== 'carte'" class="rounded-lg bg-paper-100 p-4 text-sm text-forest-500/80">
+                <div class="rounded-lg bg-paper-100 p-4 text-sm text-forest-500/80">
                     <p>Envoyez <strong>{{ reservation.total_price }} FCFA</strong> via {{ methods.find(m => m.key === form.method)?.label }} au numéro :</p>
                     <p class="mt-1 font-display text-lg font-bold text-forest-700">{{ selectedNumber || 'Numéro à venir — contactez le support' }}</p>
                 </div>
 
                 <div>
                     <label class="text-xs font-display font-semibold uppercase tracking-wide text-forest-300">
-                        {{ form.method === 'carte' ? 'Référence de la transaction' : 'Référence / code de la transaction reçue' }}
+                        Référence / code de la transaction reçue
                     </label>
                     <input v-model="form.transaction_ref" type="text" placeholder="Ex : TX-84213-WAVE" class="mt-1 w-full rounded-lg border-forest-500/15 focus:border-gold-500 focus:ring-gold-500" />
                     <p v-if="form.errors.transaction_ref" class="mt-1 text-xs text-red-600">{{ form.errors.transaction_ref }}</p>

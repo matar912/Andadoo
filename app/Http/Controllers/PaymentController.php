@@ -12,9 +12,8 @@ class PaymentController extends Controller
 {
     // Paiement "declaratif" : le client indique qu'il a paye (avec une
     // reference si mobile money) et l'admin confirme manuellement depuis le
-    // back-office. C'est une etape volontairement simple en attendant un
-    // contrat avec un agregateur local (CinetPay/PayDunya) qui gere le XOF
-    // nativement, carte comprise - Stripe ne supporte pas le Franc CFA.
+    // back-office. Seuls les moyens mobile money sont proposes (Wave, Orange
+    // Money, Free Money) - pas de carte bancaire / Stripe dans ce projet.
     public function create(Request $request, Reservation $reservation)
     {
         abort_unless($reservation->client_id === $request->user()->id, 403);
@@ -31,7 +30,6 @@ class PaymentController extends Controller
                 'orange_money' => config('andadoo.payment_numbers.orange_money'),
                 'free_money' => config('andadoo.payment_numbers.free_money'),
             ],
-            'cardEnabled' => filled(config('services.stripe.key')),
         ]);
     }
 
@@ -40,7 +38,7 @@ class PaymentController extends Controller
         abort_unless($reservation->client_id === $request->user()->id, 403);
 
         $data = $request->validate([
-            'method' => ['required', 'in:carte,wave,orange_money,free_money'],
+            'method' => ['required', 'in:wave,orange_money,free_money'],
             'transaction_ref' => ['nullable', 'string', 'max:100'],
         ]);
 
