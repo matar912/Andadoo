@@ -365,7 +365,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->command->info('========================================');
-        $this->command->info('   SEEDER GO CAR TERMINE AVEC SUCCES    ');
+        $this->command->info('   SEEDER andadoo TERMINE AVEC SUCCES    ');
         $this->command->info('========================================');
     }
 }
