@@ -9,7 +9,6 @@ const adminBase = () => `/${page.props.adminPath ?? ''}`;
 const isEdit = !!props.vehicle;
 
 const form = useForm({
-    _method: isEdit ? 'put' : 'post', // Spoofing de méthode HTTP pour Laravel lors des updates avec fichiers
     brand: props.vehicle?.brand ?? '',
     model: props.vehicle?.model ?? '',
     year: props.vehicle?.year ?? new Date().getFullYear(),
@@ -23,10 +22,10 @@ const form = useForm({
     photo: null,
 });
 
-// Utilise l'accessor photo_url du modèle Laravel (Supabase) ou l'aperçu local du fichier sélectionné
+// Apercu local du fichier choisi ; retombe sur la photo deja enregistree en edition.
 const fileInput = ref(null);
 const localPreview = ref(null);
-const currentPhotoUrl = props.vehicle?.photo_url ?? null;
+const currentPhotoUrl = props.vehicle?.photo_path ? `/vehicule-photo/${props.vehicle.photo_path}` : null;
 const previewUrl = computed(() => localPreview.value ?? currentPhotoUrl);
 
 function onPhotoChange(e) {
@@ -36,14 +35,9 @@ function onPhotoChange(e) {
 }
 
 function submit() {
-    const url = isEdit
-        ? `${adminBase()}/vehicules/${props.vehicle.id}`
-        : `${adminBase()}/vehicules`;
-
-    // Toujours form.post() pour transmettre multipart/form-data avec un fichier
-    form.post(url, {
+    // forceFormData : necessaire des qu'un fichier est present dans le payload.
+    form.post(isEdit ? `${adminBase()}/vehicules/${props.vehicle.id}` : `${adminBase()}/vehicules`, {
         forceFormData: true,
-        preserveScroll: true,
     });
 }
 </script>

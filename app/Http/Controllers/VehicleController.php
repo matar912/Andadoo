@@ -1,128 +1,50 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class VehicleController extends Controller
 {
-    /**
-     * Liste des véhicules pour l'administration.
-     */
-    public function index()
+    // Catalogue public : recherche multi-criteres (texte libre marque/modele,
+    // categorie, transmission, places, fourchette de prix).
+    //
+    // Un vehicule s'affiche quel que soit son statut de disponibilite du
+    // moment (en_location, maintenance...) : la disponibilite reelle depend
+    // des dates choisies, verifiee au moment de la reservation
+    // (Vehicle::isAvailableBetween). Seul "hors_service" (vehicule retire
+    // definitivement de la flotte active par l'admin) reste cache.
+    public function index(Request $request)
     {
-        $vehicles = Vehicle::withCount('reservations')
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $vehicles = Vehicle::query()
+            ->where('status', '!=', 'hors_service')
+            ->when($request->q, function ($query, $term) {
+                $query->where(function ($q) use ($term) {
+                    $q->where('brand', 'like', "%{$term}%")
+                        ->orWhere('model', 'like', "%{$term}%");
+                });
+            })
+            ->when($request->category, fn ($q, $v) => $q->where('category', $v))
+            ->when($request->transmission, fn ($q, $v) => $q->where('transmission', $v))
+            ->when($request->seats, fn ($q, $v) => $q->where('seats', '>=', $v))
+            ->when($request->price_min, fn ($q, $v) => $q->where('daily_price', '>=', $v))
+            ->when($request->price_max, fn ($q, $v) => $q->where('daily_price', '<=', $v))
+            ->orderBy('daily_price')
+            ->paginate(9)
+            ->withQueryString();
 
-        return Inertia::render('Admin/Vehicles/Index', [
+        return Inertia::render('Vehicles/Index', [
             'vehicles' => $vehicles,
+            'filters' => $request->only(['q', 'category', 'transmission', 'seats', 'price_min', 'price_max']),
         ]);
     }
 
-    /**
-     * Afficher le formulaire de création.
-     */
-    public function create()
+    public function show(Vehicle $vehicle)
     {
-        return Inertia::render('Admin/Vehicles/Form');
-    }
-
-    /**
-     * Enregistrer un nouveau véhicule avec sa photo dans Supabase.
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'brand'        => 'required|string|max:255',
-            'model'        => 'required|string|max:255',
-            'year'         => 'required|integer|min:1900|max:' . (date('Y') + 1),
-            'plate_number' => 'required|string|unique:vehicles,plate_number',
-            'category'     => 'required|string',
-            'seats'        => 'required|integer|min:1',
-            'transmission' => 'required|string',
-            'daily_price'  => 'required|numeric|min:0',
-            'status'       => 'required|string',
-            'description'  => 'nullable|string',
-            'photo'        => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240', // Max 10 Mo
-        ]);
-
-        if ($request->hasFile('photo')) {
-            // Téléversement explicite vers Supabase Storage sur le disque 's3'
-            $validated['photo_path'] = $request->file('photo')->store('vehicles', 's3');
-        }
-
-        Vehicle::create($validated);
-
-        return redirect()->back()->with('success', 'Véhicule ajouté avec succès à la flotte.');
-    }
-
-    /**
-     * Afficher le formulaire d'édition.
-     */
-    public function edit(Vehicle $vehicle)
-    {
-        return Inertia::render('Admin/Vehicles/Form', [
+        return Inertia::render('Vehicles/Show', [
             'vehicle' => $vehicle,
         ]);
-    }
-
-    /**
-     * Mettre à jour un véhicule existant et sa photo.
-     */
-    public function update(Request $request, Vehicle $vehicle)
-    {
-        $validated = $request->validate([
-            'brand'        => 'required|string|max:255',
-            'model'        => 'required|string|max:255',
-            'year'         => 'required|integer|min:1900|max:' . (date('Y') + 1),
-            'plate_number' => 'required|string|unique:vehicles,plate_number,' . $vehicle->id,
-            'category'     => 'required|string',
-            'seats'        => 'required|integer|min:1',
-            'transmission' => 'required|string',
-            'daily_price'  => 'required|numeric|min:0',
-            'status'       => 'required|string',
-            'description'  => 'nullable|string',
-            'photo'        => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240', // Max 10 Mo
-        ]);
-
-        if ($request->hasFile('photo')) {
-            // 1. Supprimer l'ancienne photo sur Supabase S3 si elle existe et n'est pas une URL externe
-            if ($vehicle->photo_path && !filter_var($vehicle->photo_path, FILTER_VALIDATE_URL)) {
-                Storage::disk('s3')->delete($vehicle->photo_path);
-            }
-
-            // 2. Enregistrer la nouvelle photo sur Supabase S3
-            $validated['photo_path'] = $request->file('photo')->store('vehicles', 's3');
-        }
-
-        $vehicle->update($validated);
-
-        return redirect()->back()->with('success', 'Véhicule mis à jour avec succès.');
-    }
-
-    /**
-     * Supprimer ou retirer un véhicule.
-     */
-    public function destroy(Vehicle $vehicle)
-    {
-        // Si le véhicule est lié à des réservations, on le passe en hors service
-        if ($vehicle->reservations()->exists()) {
-            $vehicle->update(['status' => 'hors_service']);
-            return redirect()->back()->with('success', 'Véhicule retiré de la flotte active.');
-        }
-
-        // Supprimer la photo sur Supabase S3 avant de supprimer le véhicule
-        if ($vehicle->photo_path && !filter_var($vehicle->photo_path, FILTER_VALIDATE_URL)) {
-            Storage::disk('s3')->delete($vehicle->photo_path);
-        }
-
-        $vehicle->delete();
-
-        return redirect()->back()->with('success', 'Véhicule supprimé définitivement.');
     }
 }

@@ -7,7 +7,7 @@ import ReservationTimeline from '@/Components/ReservationTimeline.vue';
 const props = defineProps({ reservation: Object });
 
 const statusInfo = {
-    en_attente: { label: 'En attente de validation par Andadoo', style: 'bg-gold-500/10 text-gold-700' },
+    en_attente: { label: 'En attente de validation par GO\'CAR', style: 'bg-gold-500/10 text-gold-700' },
     confirmee: { label: 'Confirmée', style: 'bg-emerald-500/10 text-emerald-700' },
     en_cours: { label: 'En cours', style: 'bg-sky-500/10 text-sky-700' },
     terminee: { label: 'Terminée', style: 'bg-forest-500/10 text-forest-500' },

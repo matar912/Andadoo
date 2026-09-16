@@ -4,107 +4,103 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Vehicle;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class VehicleController extends Controller
 {
-    // C'est ICI, et uniquement ici, que la flotte visible cote client est
-    // decidee : ajout d'un vehicule, prix, photo, et surtout son "status"
-    // qui determine s'il apparait comme disponible a la reservation.
-    public function index(): Response
+    public function index()
     {
+        $vehicles = Vehicle::withCount('reservations')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
         return Inertia::render('Admin/Vehicles/Index', [
-            'vehicles' => Vehicle::withCount('reservations')->orderBy('brand')->paginate(12),
+            'vehicles' => $vehicles,
         ]);
     }
 
-    public function create(): Response
+    public function create()
     {
-        return Inertia::render('Admin/Vehicles/Form', ['vehicle' => null]);
+        return Inertia::render('Admin/Vehicles/Form');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $data = $this->validated($request);
-        $data['uuid'] = (string) Str::uuid();
+        $validated = $request->validate([
+            'brand'        => 'required|string|max:255',
+            'model'        => 'required|string|max:255',
+            'year'         => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'plate_number' => 'required|string|unique:vehicles,plate_number',
+            'category'     => 'required|string',
+            'seats'        => 'required|integer|min:1',
+            'transmission' => 'required|string',
+            'daily_price'  => 'required|numeric|min:0',
+            'status'       => 'required|string',
+            'description'  => 'nullable|string',
+            // HEIC/HEIF ajoutes : par defaut, un iPhone capture ses photos
+            // dans ce format, non couvert par la validation "image" seule.
+            'photo'        => 'nullable|mimes:jpeg,png,jpg,webp,heic,heif|max:10240',
+        ]);
 
         if ($request->hasFile('photo')) {
-            $data['photo_path'] = $request->file('photo')->store('vehicles', 'public');
+            $validated['photo_path'] = $request->file('photo')->store('vehicles', 's3');
         }
 
-        Vehicle::create($data);
+        Vehicle::create($validated);
 
-        return redirect()->route('admin.vehicles.index')->with('success', 'Vehicule ajoute a la flotte.');
+        return redirect()->back()->with('success', 'Véhicule ajouté avec succès à la flotte.');
     }
 
-    public function edit(Vehicle $vehicle): Response
+    public function edit(Vehicle $vehicle)
     {
-        return Inertia::render('Admin/Vehicles/Form', ['vehicle' => $vehicle]);
+        return Inertia::render('Admin/Vehicles/Form', [
+            'vehicle' => $vehicle,
+        ]);
     }
 
-    public function update(Request $request, Vehicle $vehicle): RedirectResponse
+    public function update(Request $request, Vehicle $vehicle)
     {
-        $data = $this->validated($request, $vehicle->id);
+        $validated = $request->validate([
+            'brand'        => 'required|string|max:255',
+            'model'        => 'required|string|max:255',
+            'year'         => 'required|integer|min:1900|max:' . (date('Y') + 1),
+            'plate_number' => 'required|string|unique:vehicles,plate_number,' . $vehicle->id,
+            'category'     => 'required|string',
+            'seats'        => 'required|integer|min:1',
+            'transmission' => 'required|string',
+            'daily_price'  => 'required|numeric|min:0',
+            'status'       => 'required|string',
+            'description'  => 'nullable|string',
+            'photo'        => 'nullable|mimes:jpeg,png,jpg,webp,heic,heif|max:10240',
+        ]);
 
         if ($request->hasFile('photo')) {
-            // On remplace : l'ancienne photo est supprimee du disque pour ne pas
-            // accumuler des fichiers orphelins.
-            if ($vehicle->photo_path) {
-                Storage::disk('public')->delete($vehicle->photo_path);
+            if ($vehicle->photo_path && !filter_var($vehicle->photo_path, FILTER_VALIDATE_URL)) {
+                Storage::disk('s3')->delete($vehicle->photo_path);
             }
-            $data['photo_path'] = $request->file('photo')->store('vehicles', 'public');
+            $validated['photo_path'] = $request->file('photo')->store('vehicles', 's3');
         }
 
-        $vehicle->update($data);
+        $vehicle->update($validated);
 
-        return redirect()->route('admin.vehicles.index')->with('success', 'Vehicule mis a jour.');
+        return redirect()->back()->with('success', 'Véhicule mis à jour avec succès.');
     }
 
-    public function destroy(Vehicle $vehicle): RedirectResponse
+    public function destroy(Vehicle $vehicle)
     {
-        // Retirer plutot que supprimer si des reservations existent deja,
-        // pour ne pas casser l'historique - simple garde-fou.
         if ($vehicle->reservations()->exists()) {
             $vehicle->update(['status' => 'hors_service']);
-
-            return back()->with('success', 'Vehicule retire de la flotte active (historique conserve).');
+            return redirect()->back()->with('success', 'Véhicule retiré de la flotte active.');
         }
 
-        if ($vehicle->photo_path) {
-            Storage::disk('public')->delete($vehicle->photo_path);
+        if ($vehicle->photo_path && !filter_var($vehicle->photo_path, FILTER_VALIDATE_URL)) {
+            Storage::disk('s3')->delete($vehicle->photo_path);
         }
 
         $vehicle->delete();
 
-        return back()->with('success', 'Vehicule supprime.');
-    }
-
-    private function validated(Request $request, ?int $ignoreId = null): array
-    {
-        $data = $request->validate([
-            'brand' => ['required', 'string', 'max:100'],
-            'model' => ['required', 'string', 'max:100'],
-            'year' => ['required', 'integer', 'min:1990', 'max:'.(date('Y') + 1)],
-            'plate_number' => ['required', 'string', 'max:20', Rule::unique('vehicles')->ignore($ignoreId)],
-            'category' => ['required', 'in:berline,suv,4x4,minibus,citadine'],
-            'seats' => ['required', 'integer', 'min:1', 'max:30'],
-            'transmission' => ['required', 'in:manuelle,automatique'],
-            'daily_price' => ['required', 'numeric', 'min:0'],
-            'status' => ['required', 'in:disponible,en_location,maintenance,hors_service'],
-            'description' => ['nullable', 'string'],
-            // "image" verifie le type reel du fichier (pas juste l'extension) ;
-            // 4096 Ko = 4 Mo max, suffisant pour une photo de vehicule web.
-            'photo' => ['nullable', 'image', 'max:4096'],
-        ]);
-
-        unset($data['photo']); // gere separement via $request->file('photo'), pas fillable tel quel
-
-        return $data;
+        return redirect()->back()->with('success', 'Véhicule supprimé définitivement.');
     }
 }

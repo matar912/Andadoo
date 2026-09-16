@@ -43,9 +43,6 @@ class ReservationController extends Controller
             'partner_id' => ['nullable', 'exists:partners,id'],
             'options' => ['array'],
             'options.*' => ['exists:options,id'],
-            // New fields
-            'driver_license' => ['required', 'file', 'image', 'max:2048'], // max 2MB
-            'damage_agreement' => ['accepted'], // must be checked
         ]);
 
         $vehicle = Vehicle::findOrFail($data['vehicle_id']);
@@ -62,16 +59,14 @@ class ReservationController extends Controller
         $days = max(1, now()->parse($data['start_at'])->diffInDays($data['end_at']));
         $optionIds = $data['options'] ?? [];
         $optionsTotal = Option::whereIn('id', $optionIds)->sum('extra_price');
-// Store uploaded driver license image
-$data['driver_license_path'] = $request->file('driver_license')->store('driver_licenses', 'public');
 
-$reservation = Reservation::create([
-    ...collect($data)->except('options')->all(),
-    'uuid' => (string) Str::uuid(),
-    'client_id' => $request->user()->id,
-    'status' => 'en_attente',
-    'total_price' => ($vehicle->daily_price * $days) + $optionsTotal + ($data['with_driver'] ? 7000 : 0),
-]);
+        $reservation = Reservation::create([
+            ...collect($data)->except('options')->all(),
+            'uuid' => (string) Str::uuid(),
+            'client_id' => $request->user()->id,
+            'status' => 'en_attente',
+            'total_price' => ($vehicle->daily_price * $days) + $optionsTotal,
+        ]);
 
         $reservation->options()->sync($optionIds);
 

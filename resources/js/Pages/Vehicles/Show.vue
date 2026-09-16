@@ -12,7 +12,7 @@ defineProps({ vehicle: Object });
 
             <div class="card mt-4 overflow-hidden md:grid md:grid-cols-2">
                 <div class="flex h-64 items-center justify-center bg-paper-100 md:h-full">
-                    <img v-if="vehicle.photo_path" :src="`/vehicule-photo/${vehicle.photo_path}`" :alt="`${vehicle.brand} ${vehicle.model}`" class="h-full w-full object-cover" />
+                    <img v-if="vehicle.photo_url" :src="vehicle.photo_url" :alt="`${vehicle.brand} ${vehicle.model}`" class="h-full w-full object-cover" />
                     <span v-else class="font-display text-forest-300">{{ vehicle.brand }} {{ vehicle.model }}</span>
                 </div>
 

@@ -14,7 +14,8 @@ class Vehicle extends Model
         'seats', 'transmission', 'daily_price', 'status', 'photo_path', 'description',
     ];
 
-    // 1. OBLIGATOIRE : Force Laravel à inclure photo_url dans les données envoyées à Inertia / Vue
+    // Ajoute automatiquement photo_url a toute serialisation du modele
+    // (Inertia, API, ...) sans avoir a le selectionner explicitement.
     protected $appends = ['photo_url'];
 
     protected function casts(): array
@@ -22,14 +23,15 @@ class Vehicle extends Model
         return ['daily_price' => 'decimal:2'];
     }
 
-    // 2. OBLIGATOIRE : Construit l'URL complète vers Supabase Storage
+    // URL publique directe vers Supabase Storage. C'est la SEULE facon
+    // d'afficher une photo cote interface (admin ET client) : ne jamais
+    // reconstruire une URL "/vehicule-photo/..." a la main dans du Vue.
     public function getPhotoUrlAttribute(): ?string
     {
         if (! $this->photo_path) {
             return null;
         }
 
-        // Si c'est une URL externe complète (ex: Unsplash)
         if (filter_var($this->photo_path, FILTER_VALIDATE_URL)) {
             return $this->photo_path;
         }

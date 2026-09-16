@@ -16,11 +16,10 @@ const form = useForm({
     end_at: '',
     partner_id: '',
     options: [],
-    driver_license: null,
-    damage_agreement: false,
 });
 
 // Nombre de jours et estimation du prix en direct, options comprises.
+// Le montant definitif reste calcule et verifie cote serveur.
 const days = computed(() => {
     if (!form.start_at || !form.end_at) return 0;
     const diff = (new Date(form.end_at) - new Date(form.start_at)) / 86400000;
@@ -29,9 +28,7 @@ const days = computed(() => {
 const optionsTotal = computed(() =>
     props.options.filter((o) => form.options.includes(o.id)).reduce((sum, o) => sum + Number(o.extra_price), 0)
 );
-// Add driver fee when with_driver is true
-const driverFee = computed(() => (form.with_driver ? 7000 : 0));
-const estimatedTotal = computed(() => days.value * Number(props.vehicle.daily_price) + optionsTotal.value + driverFee.value);
+const estimatedTotal = computed(() => days.value * Number(props.vehicle.daily_price) + optionsTotal.value);
 
 function toggleOption(id) {
     const i = form.options.indexOf(id);
@@ -59,7 +56,7 @@ function submit() {
                         <p class="mt-1 text-sm text-paper-100/70">Chauffeur Andadoo salarie &middot; vehicule de la flotte propre</p>
                     </div>
                     <div class="flex items-center gap-3 border-l border-dashed border-paper-100/30 pl-6">
-                        <img v-if="vehicle.photo_path" :src="`/vehicule-photo/${vehicle.photo_path}`" :alt="vehicle.model" class="h-14 w-20 rounded-lg object-cover" />
+                        <img v-if="vehicle.photo_url" :src="vehicle.photo_url" :alt="vehicle.model" class="h-14 w-20 rounded-lg object-cover" />
                         <img v-else src="/images/logo-icon.png" alt="Andadoo" class="h-12 w-12 object-contain" />
                     </div>
                 </div>

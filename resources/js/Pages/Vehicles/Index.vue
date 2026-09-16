@@ -134,7 +134,7 @@ const statusBadge = {
             <div v-else-if="vehicles.data.length" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div v-for="vehicle in vehicles.data" :key="vehicle.id" class="card overflow-hidden transition hover:shadow-md">
                     <Link :href="`/vehicules/${vehicle.id}`" class="relative flex h-40 items-center justify-center bg-paper-100">
-                        <img v-if="vehicle.photo_path" :src="`/vehicule-photo/${vehicle.photo_path}`" :alt="`${vehicle.brand} ${vehicle.model}`" class="h-full w-full object-cover" />
+                        <img v-if="vehicle.photo_url" :src="vehicle.photo_url" :alt="`${vehicle.brand} ${vehicle.model}`" class="h-full w-full object-cover" />
                         <span v-else class="font-display text-forest-300">{{ vehicle.brand }} {{ vehicle.model }}</span>
                         <span v-if="statusBadge[vehicle.status]" class="absolute left-2 top-2 rounded-full px-2 py-1 text-[11px] font-display font-semibold" :class="statusBadge[vehicle.status].style">
                             {{ statusBadge[vehicle.status].label }}

@@ -12,25 +12,22 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\VehicleController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
-| Public & Fichiers
+| Public
 |--------------------------------------------------------------------------
+| Les photos ne passent plus par une route Laravel : chaque vehicule expose
+| desormais photo_url (accessor du modele), une URL publique Supabase
+| directe. Ne jamais reintroduire de route "/vehicule-photo/..." : c'est
+| precisement l'incoherence qui cassait l'affichage cote client (fiche
+| vehicule et catalogue lisaient un disque different de celui utilise par
+| l'upload admin).
 */
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
-
-Route::get('/vehicule-photo/{path}', function (string $path) {
-    $disk = Storage::disk('public');
-
-    abort_unless($disk->exists($path), 404);
-
-    return $disk->response($path);
-})->where('path', '.*')->name('vehicles.photo');
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +57,7 @@ require __DIR__.'/auth.php'; // Routes Breeze (login, register, logout client...
 | Portail Administrateur
 |--------------------------------------------------------------------------
 */
-Route::prefix('andadoo-admin')->name('admin.')->group(function () {
+Route::prefix(config('andadoo.admin_path'))->name('admin.')->group(function () {
 
     // Auth Admin
     Route::middleware('guest')->group(function () {
@@ -88,7 +85,7 @@ Route::prefix('andadoo-admin')->name('admin.')->group(function () {
         Route::patch('/reservations/{reservation}/valider', [AdminReservationController::class, 'validate_'])->name('reservations.validate');
         Route::patch('/reservations/{reservation}/refuser', [AdminReservationController::class, 'refuse'])->name('reservations.refuse');
 
-        // Options de réservation
+        // Options de reservation
         Route::get('/options', [AdminOptionController::class, 'index'])->name('options.index');
         Route::post('/options', [AdminOptionController::class, 'store'])->name('options.store');
         Route::put('/options/{option}', [AdminOptionController::class, 'update'])->name('options.update');
@@ -100,7 +97,7 @@ Route::prefix('andadoo-admin')->name('admin.')->group(function () {
         Route::put('/partenaires/{partner}', [AdminPartnerController::class, 'update'])->name('partners.update');
         Route::delete('/partenaires/{partner}', [AdminPartnerController::class, 'destroy'])->name('partners.destroy');
 
-        // Vérification manuelle des paiements
+        // Verification manuelle des paiements
         Route::get('/paiements', [AdminPaymentController::class, 'index'])->name('payments.index');
         Route::patch('/paiements/{payment}/confirmer', [AdminPaymentController::class, 'confirm'])->name('payments.confirm');
         Route::patch('/paiements/{payment}/rejeter', [AdminPaymentController::class, 'reject'])->name('payments.reject');
